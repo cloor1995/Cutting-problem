@@ -1,0 +1,36 @@
+# input data
+
+
+set products := {"Kreuzer", "Zacken", "L-Form"};
+set patters := {1..13};
+
+param demand [products] := <"Kreuzer"> 579, <"Zacken"> 1322, <"L-Form"> 2103;
+param combination [patters * products] :=
+
+  | "Kreuzer", "Zacken", "L-Form"|
+|1| 2, 1, 1|
+|2| 2, 0, 2|
+|3| 1, 3, 1|
+|4| 1, 1, 3|
+|5| 0, 4, 1|
+|6| 0, 3, 2|
+|7| 1, 3, 0|
+|8| 0, 2, 3|
+|9| 1, 1, 2|
+|10| 1, 2, 1|
+|11| 0, 1, 4|
+|12| 0, 0, 5|
+|13| 1, 0, 3|;
+
+param size := 25;
+param waste [patters] := <1> 7, <2> 7, <3> 4, <4> 4, <5> 5, <6> 5, <7> 8, <8> 5, <9> 8, <10> 8, <11> 5, <12> 5, <13> 8;
+
+# the variables of the model
+var x[patters] integer;
+
+# the model 
+
+ minimize usageobj: sum <j> in patters : 2 * x[j];
+ subto fulfillDemand:
+ 	forall <i> in products do
+ 		sum <j> in patters : combination[j,i] * x[j] >= demand[i];
